@@ -5,10 +5,10 @@ class Coin(models.Model):
     name = models.CharField(max_length=200)
     abbreviation = models.CharField(max_length=200)
     valid = models.BooleanField(default=True)
-    created_date = models.DateTimeField('date created',default=timezone.now(), editable=True)
+    created_date = models.DateTimeField('date created',default=timezone.now, editable=True)
 
     def was_published_recently(self):
-        return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
+        return self.pub_date >= timezone.now - datetime.timedelta(days=1)
 
     class Meta:
         verbose_name_plural = "Coins"
@@ -28,7 +28,7 @@ class CoinData(models.Model):
     top_tier_volume = models.DecimalField(max_digits=14, decimal_places=2, default=0.00)
     market_cap = models.DecimalField(max_digits=14, decimal_places=2, default=0.00)
     valid = models.BooleanField(default=True)
-    created_date = models.DateTimeField('date created',default=timezone.now(), editable=True)
+    created_date = models.DateTimeField('date created',default=timezone.now, editable=True)
 
     class Meta:
         verbose_name_plural = "Coin Data"
