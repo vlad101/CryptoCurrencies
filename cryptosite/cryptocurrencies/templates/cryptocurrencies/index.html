@@ -1,0 +1,11 @@
+{% if coin_list %}
+    <ul>
+    {% for coin in coin_list %}
+        <li>
+            <a href="{% url 'detail' coin.id %}">{{ coin.name }}</a>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No cryptocurrencies are available.</p>
+{% endif %}
