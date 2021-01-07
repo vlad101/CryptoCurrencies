@@ -1,8 +1,12 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'cryptocurrencies/style.css' %}">
+
 {% if coin_list %}
     <ul>
     {% for coin in coin_list %}
         <li>
-            <a href="{% url 'detail' coin.id %}">{{ coin.name }}</a>
+            <a href="{% url 'cryptocurrencies:detail' coin.id %}">{{ coin.name }}</a>
         </li>
     {% endfor %}
     </ul>
