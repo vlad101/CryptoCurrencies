@@ -119,3 +119,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Redirect to home URL after login (Default redirects to /accounts/profile/)
+LOGIN_REDIRECT_URL = '/cryptocurrencies'
+
+
+# Send email logs to the console
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

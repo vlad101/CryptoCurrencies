@@ -1,17 +1,20 @@
-{% load static %}
+{% extends "base_generic.html" %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'cryptocurrencies/style.css' %}">
+{% block content %}
+  <h1>Home</h1>
+  <p>Welcome to Cryptocurrencies, a website developed by <em>V</em>!</p>
+    {% if coin_list %}
+        <p>The coin list:</p>
+        <ul>
+        {% for coin in coin_list %}
+            <li>
+                <a href="{% url 'cryptocurrencies:detail' coin.id %}"><strong>{{ coin.name }}</strong></a>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No cryptocurrencies are available.</p>
+    {% endif %}
 
-{% if coin_list %}
-    <ul>
-    {% for coin in coin_list %}
-        <li>
-            <a href="{% url 'cryptocurrencies:detail' coin.id %}">{{ coin.name }}</a>
-        </li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No cryptocurrencies are available.</p>
-{% endif %}
-
-<p>You have visited this page {{ num_visits }} time{% if num_visits > 1 %}s{% endif %}.</p>
+    <p>You have visited this page {{ index_num_visits }} time{% if index_num_visits > 1 %}s{% endif %}.</p>
+{% endblock %}
