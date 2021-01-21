@@ -1,5 +1,4 @@
 from django.urls import path
-
 from . import views
 
 
@@ -9,4 +8,5 @@ urlpatterns = [
     path('', views.IndexView.as_view(), name='index'),
     # ex: /cryptocurrencies/1
     path('<int:pk>/', views.DetailView.as_view(), name='detail'),
+    path('graph/', views.GraphView.as_view(), name="graph"),
 ]
