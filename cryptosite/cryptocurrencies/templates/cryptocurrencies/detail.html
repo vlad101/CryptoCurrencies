@@ -1,6 +1,10 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'cryptocurrencies/detail.css' %}">
+
     {% if coin %}
         <h1>Details for {{ coin.name }}</h1>
         <ul>
@@ -11,6 +15,15 @@
             <li>{{ coin.coindata.market_cap }}</li>
             <li>{{ coin.coindata.created_date }}</li>
         </ul>
+
+        <div id="detail-graph">
+            {% if graph %}
+            {{ graph|safe }}
+            {% else %}
+            <p>No graph was provided.</p>
+            {% endif %}
+        </div>
+
     {% else %}
         <p>No coin data available.</p>
     {% endif %}

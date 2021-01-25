@@ -10,7 +10,7 @@ class CoinAdmin(admin.ModelAdmin):
         ('Valid', {'fields': ['valid']}),
         ('Date & Time', {'fields': ['created_date']}),
     ]
-    list_display = ('name', 'created_date', 'valid')
+    list_display = ('name', 'abbreviation', 'created_date', 'valid')
     list_filter = ['name', 'created_date']
 
 class CoinDataAdmin(admin.ModelAdmin):

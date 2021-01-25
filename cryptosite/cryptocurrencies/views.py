@@ -2,8 +2,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views.generic import (
     ListView,
-    DetailView,
-    TemplateView
+    DetailView
 )
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -49,36 +48,69 @@ class DetailView(LoginRequiredMixin, DetailView):
         num_visits = self.request.session.get('detail_num_visits', 1)
         self.request.session['detail_num_visits'] = num_visits + 1
         # Build context data
-        context = super().get_context_data(**kwargs)
+        #context = super().get_context_data(**kwargs)
+        context = super(DetailView, self).get_context_data(**kwargs)
         context['detail_num_visits'] = num_visits
+        # Get coin data
+        coins = Coin.objects.filter(pk=self.kwargs.get('pk'))[:1]
+
+        for coin in coins:
+            if coin:
+                # Download and cache Quandl dataseries
+                graph_data = {}
+                graph_data['data_type'] = 'Weighted Price'
+                graph_data['title_x_axis'] = 'Time' 
+                graph_data['title_y_axis'] = 'Price'
+                graph_data['title'] = 'Data Chart'
+
+                kraken_data_str = None
+                coin_abbreviation = coin.abbreviation.lower()
+                if coin_abbreviation == 'BTC'.lower():
+                    kraken_data_str = 'BCHARTS/KRAKENUSD'
+                elif coin_abbreviation == 'ETH'.lower():
+                    kraken_data_str = 'GDAX/ETH_USD'
+                elif coin_abbreviation == 'EOS'.lower():
+                    kraken_data_str = 'BITFINEX/EOSUSD'
+                else:
+                    print(coin.name)
+                
+                    #Ethereum
+                if kraken_data_str:
+                    graphUtil = GraphUtil(graph_data)
+                    usd_price_kraken = graphUtil.get_quandl_data(kraken_data_str)
+                    # Chart the pricing data
+                    context['graph'] = graphUtil.get_plot_div(usd_price_kraken)
         return context
 
-def get_quandl_data(quandl_id):
-    '''Download and cache Quandl dataseries'''
-    cache_path = '{}.pkl'.format(quandl_id).replace('/','-')
-    try:
-        f = open(cache_path, 'rb')
-        df = pickle.load(f)   
-        print('Loaded {} from cache'.format(quandl_id))
-    except (OSError, IOError) as e:
-        print('Downloading {} from Quandl'.format(quandl_id))
-        df = quandl.get(quandl_id, returns="pandas")
-        df.to_pickle(cache_path)
-        print('Cached {} at {}'.format(quandl_id, cache_path))
-    return df
 
-class GraphView(TemplateView):
-    template_name = 'cryptocurrencies/graph.html'
+class GraphUtil:
+    graph_data = {}
 
-    def get_context_data(self, **kwargs):
-        context = super(GraphView, self).get_context_data(**kwargs)
-        # Chart the BTC pricing data
-        btc_usd_price_kraken = get_quandl_data('BCHARTS/KRAKENUSD')
-        btc_trace = go.Scatter(x=btc_usd_price_kraken.index, y=btc_usd_price_kraken['Weighted Price'])
-        data=go.Data([btc_trace])
-        layout=go.Layout(title="BCHARTS", xaxis={'title':'x1'}, yaxis={'title':'x2'})
-        figure=go.Figure(data=data,layout=layout)
-        div = py.plot(figure, auto_open=False, output_type='div')
-        context['graph'] = div
+    def __init__(self, graph_obj):
+        self.graph_data = graph_obj
 
-        return context
+    def get_quandl_data(self, quandl_id):
+        cache_path = '{}.pkl'.format(quandl_id).replace('/','-')
+        try:
+            f = open(cache_path, 'rb')
+            df = pickle.load(f)   
+            print('Loaded {} from cache'.format(quandl_id))
+        except (OSError, IOError) as e:
+            print('Downloading {} from Quandl'.format(quandl_id))
+            df = quandl.get(quandl_id, returns="pandas")
+            df.to_pickle(cache_path)
+            print('Cached {} at {}'.format(quandl_id, cache_path))
+        return df
+
+    def get_plot_div(self, usd_price_kraken):
+        print(usd_price_kraken.index)
+        print(usd_price_kraken['Weighted Price'])
+        data_trace = go.Scatter(x=usd_price_kraken.index, y=usd_price_kraken[self.graph_data['data_type']])
+        data = [data_trace]
+        layout=go.Layout(
+            title=self.graph_data['title'],
+            xaxis={'title':self.graph_data['title_x_axis']}, 
+            yaxis={'title':self.graph_data['title_y_axis']},
+        )
+        figure = go.Figure(data=data,layout=layout)
+        return py.plot(figure, auto_open=False, output_type='div')
