@@ -1,3 +1,5 @@
+import os
+
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views.generic import (
@@ -6,16 +8,14 @@ from django.views.generic import (
 )
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-import os
+from pusher import Pusher
+import plotly.graph_objs as go
+
 import numpy as np
 import pandas as pd
 import pickle
 import quandl
-from datetime import datetime
-
 import plotly.offline as py
-import plotly.graph_objs as go
-import plotly.figure_factory as ff
 py.init_notebook_mode(connected=True)
 
 from .models import Coin, CoinData
@@ -103,8 +103,6 @@ class GraphUtil:
         return df
 
     def get_plot_div(self, usd_price_kraken):
-        print(usd_price_kraken.index)
-        print(usd_price_kraken['Weighted Price'])
         data_trace = go.Scatter(x=usd_price_kraken.index, y=usd_price_kraken[self.graph_data['data_type']])
         data = [data_trace]
         layout=go.Layout(

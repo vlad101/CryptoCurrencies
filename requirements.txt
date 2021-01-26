@@ -1,0 +1,7 @@
+Django==3.1.5
+django-extensions==3.1.0
+djangorestframework==3.12.2
+plotly==4.14.3
+python-dotenv==0.15.0
+Quandl==3.6.0
+requests==2.25.1
