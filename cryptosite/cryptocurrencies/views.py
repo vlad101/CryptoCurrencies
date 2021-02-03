@@ -54,32 +54,24 @@ class DetailView(LoginRequiredMixin, DetailView):
         # Get coin data
         coins = Coin.objects.filter(pk=self.kwargs.get('pk'))[:1]
 
-        for coin in coins:
-            if coin:
-                # Download and cache Quandl dataseries
-                graph_data = {}
-                graph_data['data_type'] = 'Weighted Price'
-                graph_data['title_x_axis'] = 'Time' 
-                graph_data['title_y_axis'] = 'Price'
-                graph_data['title'] = 'Data Chart'
+        # Download and cache Quandl dataseries
+        graph_data = {}
+        graph_data['data_type'] = 'Weighted Price'
+        graph_data['title_x_axis'] = 'Time' 
+        graph_data['title_y_axis'] = 'Price'
+        graph_data['title'] = 'Data Chart'
 
-                kraken_data_str = None
-                coin_abbreviation = coin.abbreviation.lower()
-                if coin_abbreviation == 'BTC'.lower():
-                    kraken_data_str = 'BCHARTS/KRAKENUSD'
-                elif coin_abbreviation == 'ETH'.lower():
-                    kraken_data_str = 'GDAX/ETH_USD'
-                elif coin_abbreviation == 'EOS'.lower():
-                    kraken_data_str = 'BITFINEX/EOSUSD'
-                else:
-                    print(coin.name)
-                
-                    #Ethereum
-                if kraken_data_str:
-                    graphUtil = GraphUtil(graph_data)
-                    usd_price_kraken = graphUtil.get_quandl_data(kraken_data_str)
-                    # Chart the pricing data
-                    context['graph'] = graphUtil.get_plot_div(usd_price_kraken)
+        kraken_data_str = None
+        coin_abbreviation = 'BTC'.lower()
+        if coin_abbreviation == 'BTC'.lower():
+            kraken_data_str = 'BCHARTS/KRAKENUSD'
+        
+            #Ethereum
+        if kraken_data_str:
+            graphUtil = GraphUtil(graph_data)
+            usd_price_kraken = graphUtil.get_quandl_data(kraken_data_str)
+            # Chart the pricing data
+            context['graph'] = graphUtil.get_plot_div(usd_price_kraken)
         return context
 
 

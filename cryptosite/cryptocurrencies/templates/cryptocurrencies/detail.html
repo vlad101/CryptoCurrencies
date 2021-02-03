@@ -7,50 +7,50 @@
 
 <script src="{% static 'cryptocurrencies/js/plugins/d3.min.js' %}"></script>  
 <script src="{% static 'cryptocurrencies/js/plugins/plotly-basic.js' %}"></script>  
-<script src="{% static 'cryptocurrencies/js/plugins/pusher.min.js' %}"></script>   
+<script src="{% static 'cryptocurrencies/js/plugins/pusher.min.js' %}"></script>
+
+{% if coin %}
+    <div class="row">
+        <div class="col-lg-5">
+            <h1>Details for <span id="coin-name">{{ coin.name }}</span></h1>
+            <ul>
+                <li>{{ coin.coindata.price }}</li>
+                <li>{{ coin.coindata.direct_volume }}</li>
+                <li>{{ coin.coindata.total_volume }}</li>
+                <li>{{ coin.coindata.top_tier_volume }}</li>
+                <li>{{ coin.coindata.market_cap }}</li>
+                <li>{{ coin.coindata.created_date }}</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-7">
+            <h5>Prices (in USD)</h5>
+            <div id="price_chart" class="chart">
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <h5>Market Cap</h5>
+            <div id="market_cap_chart" class="chart"></div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-10">
+            {% if graph %}
+            {{ graph|safe }}
+            {% else %}
+            <p>No graph was provided.</p>
+            {% endif %}
+        </div>
+    </div>
+
+{% else %}
+    <p>No coin data available.</p>
+{% endif %}
+
+<p>You have visited this page {{ detail_num_visits }} time{% if detail_num_visits > 1 %}s{% endif %}.</p>
 
 <script src="{% static 'cryptocurrencies/js/detail.js' %}"></script>  
-
-    {% if coin %}
-        <div class="row">
-            <div class="col-lg-5">
-                <h1>Details for {{ coin.name }}</h1>
-                <ul>
-                    <li>{{ coin.coindata.price }}</li>
-                    <li>{{ coin.coindata.direct_volume }}</li>
-                    <li>{{ coin.coindata.total_volume }}</li>
-                    <li>{{ coin.coindata.top_tier_volume }}</li>
-                    <li>{{ coin.coindata.market_cap }}</li>
-                    <li>{{ coin.coindata.created_date }}</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-lg-7">
-                <h5>Prices (in USD)</h5>
-                <div id="btc_price_chart" class="chart">
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <h5>Market Cap</h5>
-                <div id="btc_market_cap_chart" class="chart"></div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-lg-10">
-                {% if graph %}
-                {{ graph|safe }}
-                {% else %}
-                <p>No graph was provided.</p>
-                {% endif %}
-            </div>
-        </div>
-
-    {% else %}
-        <p>No coin data available.</p>
-    {% endif %}
-
-    <p>You have visited this page {{ detail_num_visits }} time{% if detail_num_visits > 1 %}s{% endif %}.</p>
 {% endblock %}
