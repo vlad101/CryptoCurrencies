@@ -1,7 +1,7 @@
 // get coin name
 const coinName = document.getElementById("coin-name");
 if(coinName != null) {
-    const name = coinName.innerHTML.toLowerCase();
+    const name = coinName.innerHTML.toLowerCase().replaceAll(' ', '-');
     // get coin name
     // connect to Pusher
     const pusher = new Pusher(

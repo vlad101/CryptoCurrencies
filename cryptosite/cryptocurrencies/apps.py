@@ -18,9 +18,9 @@ class CryptocurrenciesConfig(AppConfig):
         scheduler.start()
         scheduler.add_job(
             func=pusher_util.retrieve_data,
-            trigger=IntervalTrigger(seconds=10),
+            trigger=IntervalTrigger(seconds=500000000),
             id='prices_retrieval_job',
-            name='Retrieve prices every 10 seconds',
+            name='Retrieve prices every 5 seconds',
             replace_existing=True)
         # Shut down the scheduler when exiting the app
         atexit.register(lambda: scheduler.shutdown())
